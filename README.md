@@ -10,7 +10,7 @@ The following will create an ALB controller in an EKS cluster
 
 ```HCL
 module "alb-controller" {
-  source            = "srb3/eks-alb-controller/aws"
+  source            = "KongHQ-CX/eks-alb-controller/aws"
   oidc_provider_arn = module.cluster-1.0.oidc_provider_arn
   region            = var.region
   vpc_id            = module.vpc.vpc_id

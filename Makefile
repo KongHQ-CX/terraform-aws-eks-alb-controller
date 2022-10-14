@@ -8,7 +8,7 @@ ifndef deployment_name
 $(error deployment_name needs to be set - deployment_name=my-deployment make build)
 endif
 ifndef email
-$(error email needs to be set - email=myemai@kong.conf make build)
+$(error email needs to be set - email=myemail@mail.com make build)
 endif
 
 check_aws_env: 
