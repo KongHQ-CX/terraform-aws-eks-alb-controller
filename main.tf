@@ -28,6 +28,7 @@ resource "kubernetes_service_account" "service-account" {
 }
 
 resource "helm_release" "lb" {
+  count      = create_deployment ? 1 : 0
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"

@@ -17,3 +17,9 @@ variable "cluster_name" {
   description = "The name of the EKS"
   type        = string
 }
+
+variable "create_deployment" {
+  description = "Should we create the ALB controller deployment"
+  type        = bool
+  default     = true
+}
