@@ -1,12 +1,3 @@
-output "aws_vpc" {
-  value = data.aws_vpc.this
-}
-
-output "aws_subnet_ids" {
-  value = data.aws_subnets.this
-}
-
-
 locals {
   cluster_cp     = try(module.cluster-1.0.cluster_id, "cluster-not-created")
   cluster_cp_arn = try(module.cluster-1.0.cluster_arn, "cluster-not-created")

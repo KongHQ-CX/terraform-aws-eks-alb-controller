@@ -60,3 +60,11 @@ variable "cluster_1_create" {
   type        = bool
   default     = true
 }
+
+
+########### Test settings ########################
+
+variable "hostname" {
+  description = "The hostname for out test service"
+  type        = string
+}

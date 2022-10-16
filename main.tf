@@ -1,4 +1,5 @@
 module "lb_role" {
+  count  = var.create_role ? 1 : 0
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
   role_name                              = "eks_lb"
@@ -7,32 +8,35 @@ module "lb_role" {
   oidc_providers = {
     main = {
       provider_arn               = var.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+      namespace_service_accounts = ["${var.namespace}:${var.service_account}"]
     }
   }
+  tags = var.tags
 }
 
 resource "kubernetes_service_account" "service-account" {
+  count = var.create_service_account ? 1 : 0
   metadata {
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
+    name      = var.service_account
+    namespace = var.namespace
     labels = {
-      "app.kubernetes.io/name"      = "aws-load-balancer-controller"
+      "app.kubernetes.io/name"      = var.service_account
       "app.kubernetes.io/component" = "controller"
     }
     annotations = {
-      "eks.amazonaws.com/role-arn"               = module.lb_role.iam_role_arn
+      "eks.amazonaws.com/role-arn"               = module.lb_role.0.iam_role_arn
       "eks.amazonaws.com/sts-regional-endpoints" = "true"
     }
   }
 }
 
 resource "helm_release" "lb" {
-  count      = create_deployment ? 1 : 0
+  count      = var.create_deployment ? 1 : 0
   name       = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
-  namespace  = "kube-system"
+  version    = var.chart_version
+  namespace  = var.namespace
   depends_on = [
     kubernetes_service_account.service-account
   ]
@@ -48,18 +52,13 @@ resource "helm_release" "lb" {
   }
 
   set {
-    name  = "image.repository"
-    value = "602401143452.dkr.ecr.eu-west-2.amazonaws.com/amazon/aws-load-balancer-controller"
-  }
-
-  set {
     name  = "serviceAccount.create"
     value = "false"
   }
 
   set {
     name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
+    value = var.service_account
   }
 
   set {
