@@ -28,7 +28,7 @@ variable "service_account" {
 }
 
 variable "cluster_name" {
-  description = "The name of the EKS"
+  description = "The name of the EKS cluster"
   type        = string
 }
 

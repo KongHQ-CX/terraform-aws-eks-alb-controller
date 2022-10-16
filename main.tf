@@ -2,7 +2,7 @@ module "lb_role" {
   count  = var.create_role ? 1 : 0
   source = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
 
-  role_name                              = "eks_lb"
+  role_name                              = "${var.cluster_name}-eks-lb"
   attach_load_balancer_controller_policy = true
 
   oidc_providers = {
